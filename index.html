@@ -177,6 +177,159 @@
 <script>
 /* YOUR SAME WORKING JS — NOT REMOVED */
 <script>
+let coins = 0;
+let clickPower = 1;
+let autoPower = 0;
+
+// Upgrade Costs
+let cCost = 30;
+let aCost = 50;
+let mCost = 500;
+
+let goldenCost = 200;
+let drillCost = 500;
+let factoryCost = 3000;
+
+// ================= CLICK TO EARN =================
+function gain(){
+    coins += clickPower;
+    document.getElementById("coins").innerText = coins;
+    spawnParticle("+ " + clickPower);
+}
+
+// ================= UPGRADES =================
+function buyClickPower(){
+    if(coins >= cCost){
+        coins -= cCost;
+        clickPower++;
+        cCost = Math.floor(cCost * 1.4);
+        document.getElementById("cCost").innerText = cCost;
+        updateCoins();
+    }
+}
+
+function buyAuto(){
+    if(coins >= aCost){
+        coins -= aCost;
+        autoPower++;
+        aCost = Math.floor(aCost * 1.35);
+        document.getElementById("aCost").innerText = aCost;
+        updateCoins();
+    }
+}
+
+function buyMega(){
+    if(coins >= mCost){
+        coins -= mCost;
+        autoPower += 10;
+        mCost = Math.floor(mCost * 1.45);
+        document.getElementById("mCost").innerText = mCost;
+        updateCoins();
+    }
+}
+
+// SHOP ITEMS
+
+function buyGolden(){
+    if(coins >= goldenCost){
+        coins -= goldenCost;
+        clickPower += 5;
+        goldenCost = Math.floor(goldenCost * 1.6);
+        document.getElementById("goldenCost").innerText = goldenCost;
+        updateCoins();
+        achievement("Bought Frog Net 🐸");
+    }
+}
+
+function buyDrill(){
+    if(coins >= drillCost){
+        coins -= drillCost;
+        autoPower += 5;
+        drillCost = Math.floor(drillCost * 1.55);
+        document.getElementById("drillCost").innerText = drillCost;
+        updateCoins();
+        achievement("Built Frog Shrine 🛕");
+    }
+}
+
+function buyFactory(){
+    if(coins >= factoryCost){
+        coins -= factoryCost;
+        autoPower += 50;
+        factoryCost = Math.floor(factoryCost * 1.65);
+        document.getElementById("factoryCost").innerText = factoryCost;
+        updateCoins();
+        achievement("Blessed by Frog ✨🐸");
+    }
+}
+
+// ================= AUTO COINS PER SECOND =================
+setInterval(()=>{ 
+    coins += autoPower;
+    updateCoins();
+},1000);
+
+// ================= DISPLAY UPDATE =================
+function updateCoins(){
+    document.getElementById("coins").innerText = coins;
+}
+
+// ================= FLOATING COIN PARTICLES =================
+function spawnParticle(text){
+    let p = document.createElement("div");
+    p.className = "particle";
+    p.innerText = text;
+    p.style.left = (event.clientX-10)+"px";
+    p.style.top = (event.clientY-10)+"px";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),1100);
+}
+
+// ================= ACHIEVEMENT POPUP =================
+function achievement(text){
+    let popup = document.getElementById("achievementPopup");
+    popup.innerText = text;
+    popup.style.right = "30px";
+    setTimeout(()=> popup.style.right = "-400px", 2500);
+}
+
+// ================= SAVE SYSTEM =================
+function saveGame(){
+    localStorage.setItem("coins",coins);
+    localStorage.setItem("clickPower",clickPower);
+    localStorage.setItem("autoPower",autoPower);
+    localStorage.setItem("cCost",cCost);
+    localStorage.setItem("aCost",aCost);
+    localStorage.setItem("mCost",mCost);
+    localStorage.setItem("goldenCost",goldenCost);
+    localStorage.setItem("drillCost",drillCost);
+    localStorage.setItem("factoryCost",factoryCost);
+    achievement("Game Saved 💾");
+}
+
+// AUTOLOAD ON START
+window.onload = ()=>{
+    if(localStorage.getItem("coins")) coins = Number(localStorage.getItem("coins"));
+    if(localStorage.getItem("clickPower")) clickPower = Number(localStorage.getItem("clickPower"));
+    if(localStorage.getItem("autoPower")) autoPower = Number(localStorage.getItem("autoPower"));
+    if(localStorage.getItem("cCost")) cCost = Number(localStorage.getItem("cCost"));
+    if(localStorage.getItem("aCost")) aCost = Number(localStorage.getItem("aCost"));
+    if(localStorage.getItem("mCost")) mCost = Number(localStorage.getItem("mCost"));
+    if(localStorage.getItem("goldenCost")) goldenCost = Number(localStorage.getItem("goldenCost"));
+    if(localStorage.getItem("drillCost")) drillCost = Number(localStorage.getItem("drillCost"));
+    if(localStorage.getItem("factoryCost")) factoryCost = Number(localStorage.getItem("factoryCost"));
+
+    document.getElementById("cCost").innerText = cCost;
+    document.getElementById("aCost").innerText = aCost;
+    document.getElementById("mCost").innerText = mCost;
+    document.getElementById("goldenCost").innerText = goldenCost;
+    document.getElementById("drillCost").innerText = drillCost;
+    document.getElementById("factoryCost").innerText = factoryCost;
+    updateCoins();
+};
+</script>
+    
+<script>
 /* ===================== GAME VARIABLES ===================== */
 let coins = 0;
 let clickPower = 1;
@@ -331,4 +484,5 @@ function update(){
 </script>
 </body>
 </html>
+
 
