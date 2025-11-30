@@ -176,6 +176,159 @@
 
 <script>
 /* YOUR SAME WORKING JS — NOT REMOVED */
+<script>
+/* ===================== GAME VARIABLES ===================== */
+let coins = 0;
+let clickPower = 1;
+
+let autoRate = 0;
+let autoCost = 50;
+let clickCost = 30;
+
+let megaRate = 0;
+let megaCost = 500;
+
+/* SHOP ITEMS */
+let goldenCost = 200;
+let drillCost = 500;
+let factoryCost = 3000;
+
+/* NEW ULTIMATE SHOP ITEMS */
+let frogTempleCost = 10000;   // +250/sec
+let frogGalaxyCost = 50000;   // +1500/sec
+let frogGodCost = 250000;     // ×2 total production forever
+
+/* ===================== BACKGROUND MUSIC ===================== */
+const bgm = new Audio("themefrog.wav");
+bgm.loop = true;
+bgm.volume = 0.45;       // adjust volume here
+window.onload = () => bgm.play();
+
+/* WORKING FUNCTIONS YOU ALREADY HAD */
+function gain(){ coins+=clickPower; particle("+"+clickPower); update();}
+function buyClickPower(){
+    if(coins>=clickCost){
+        coins-=clickCost; clickPower++;
+        clickCost = Math.floor(clickCost*1.4);
+        document.getElementById("cCost").innerText=clickCost; update();
+    }
+}
+function buyAuto(){
+    if(coins>=autoCost){
+        coins-=autoCost; autoRate++;
+        autoCost = Math.floor(autoCost*1.45);
+        document.getElementById("aCost").innerText=autoCost; update();
+    }
+}
+function buyMega(){
+    if(coins>=megaCost){
+        coins-=megaCost; megaRate+=10;
+        megaCost = Math.floor(megaCost*1.55);
+        document.getElementById("mCost").innerText=megaCost; update();
+    }
+}
+
+/* ===================== NEW SHOP FUNCTIONS ===================== */
+function buyGolden(){ if(coins>=goldenCost){
+    coins-=goldenCost; clickPower+=5;
+    goldenCost = Math.floor(goldenCost*1.7);
+    document.getElementById("goldenCost").innerText=goldenCost; update();
+}}
+
+function buyDrill(){ if(coins>=drillCost){
+    coins-=drillCost; autoRate+=5;
+    drillCost = Math.floor(drillCost*1.6);
+    document.getElementById("drillCost").innerText=drillCost; update();
+}}
+
+function buyFactory(){ if(coins>=factoryCost){
+    coins-=factoryCost; autoRate+=50;
+    factoryCost = Math.floor(factoryCost*1.75);
+    document.getElementById("factoryCost").innerText=factoryCost; update();
+}}
+
+/* ⭐ NEW ULTRA ITEMS */
+function buyTemple(){
+    if(coins>=frogTempleCost){
+        coins-=frogTempleCost;
+        autoRate+=250;
+        frogTempleCost=Math.floor(frogTempleCost*1.85);
+        document.getElementById("templeCost").innerText=frogTempleCost; update();
+    }
+}
+function buyGalaxy(){
+    if(coins>=frogGalaxyCost){
+        coins-=frogGalaxyCost;
+        autoRate+=1500;
+        frogGalaxyCost=Math.floor(frogGalaxyCost*2.1);
+        document.getElementById("galaxyCost").innerText=frogGalaxyCost; update();
+    }
+}
+function buyGod(){
+    if(coins>=frogGodCost){
+        coins-=frogGodCost;
+        clickPower*=2;
+        autoRate*=2;
+        frogGodCost=Math.floor(frogGodCost*2.5);
+        document.getElementById("godCost").innerText=frogGodCost;
+        popup("🐸✨ You Ascended to Frog God!");
+        update();
+    }
+}
+
+/* ===================== AUTOINCOME ===================== */
+setInterval(()=>{
+    let total = autoRate+megaRate;
+    coins+=total;
+    if(total>0) particle("+"+total);
+    update();
+},1000);
+
+/* ===================== SAVE SYSTEM ===================== */
+function saveGame(){
+    localStorage.setItem("FrogSave", JSON.stringify({
+        coins, clickPower, autoRate, megaRate,
+        clickCost, autoCost, megaCost,
+        goldenCost, drillCost, factoryCost,
+        frogTempleCost,frogGalaxyCost,frogGodCost
+    }));
+    popup("💾 Saved!");
+}
+
+window.onload = ()=> {
+    bgm.play(); // ensure music starts
+    let load = localStorage.getItem("FrogSave");
+    if(load){
+        let s=JSON.parse(load);
+        coins=s.coins;clickPower=s.clickPower;autoRate=s.autoRate;megaRate=s.megaRate;
+        clickCost=s.clickCost;autoCost=s.autoCost;megaCost=s.megaCost;
+        goldenCost=s.goldenCost;drillCost=s.drillCost;factoryCost=s.factoryCost;
+        frogTempleCost=s.frogTempleCost;frogGalaxyCost=s.frogGalaxyCost;frogGodCost=s.frogGodCost;
+    }
+    update();
+};
+setInterval(saveGame,1000);
+
+/* ===================== EFFECTS ===================== */
+function particle(t){
+    let p=document.createElement("div");
+    p.className="particle";
+    p.innerText=t;
+    p.style.left=(window.innerWidth/2)+(Math.random()*80-40)+"px";
+    p.style.top="300px";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),900);
+}
+function popup(msg){
+    let box=document.getElementById("achievementPopup");
+    box.innerText=msg;
+    box.style.right="25px";
+    setTimeout(()=> box.style.right="-400px",3300);
+}
+function update(){
+    document.getElementById("coins").innerText=coins;
+}
 </script>
 </body>
 </html>
+
